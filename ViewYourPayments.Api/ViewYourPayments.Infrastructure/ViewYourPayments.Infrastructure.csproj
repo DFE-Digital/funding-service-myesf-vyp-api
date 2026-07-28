@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Database\**" />
+    <Compile Remove="Insight\**" />
+    <Compile Remove="Logger\**" />
+    <EmbeddedResource Remove="Database\**" />
+    <EmbeddedResource Remove="Insight\**" />
+    <EmbeddedResource Remove="Logger\**" />
+    <EntityDeploy Remove="Insight\**" />
+    <None Remove="Database\**" />
+    <None Remove="Insight\**" />
+    <None Remove="Logger\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ViewYourPayments.Core\ViewYourPayments.Core.csproj" />
+    <ProjectReference Include="..\ViewYourPayments.EntityFramework\ViewYourPayments.EntityFramework.csproj" />
+  </ItemGroup>
+
+</Project>
