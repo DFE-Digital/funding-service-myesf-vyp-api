@@ -579,30 +579,6 @@
       "resourceGroup": "[parameters('sharedResourceGroup')]"
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "Deploy_SQL_server_firewall_rules",
-      "resourceGroup": "[parameters('sharedResourceGroup')]",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'test-sql-server-firewall-rules.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "firewallRuleNamePrefix": {
-            "value": "AZURE_IP-"
-          },
-          "ipAddresses": {
-            "value": "[union(reference('Deploy_API_App_Service').outputs.possibleOutboundIpAddresses.value, reference('DataImport_Function_App_Deployment').outputs.possibleOutboundIpAddresses.value)]"
-          },
-          "serverName": {
-            "value": "[parameters('sharedSQLServerName')]"
-          }
-        }
-      }
-    },
-    {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2018-02-01",
       "name": "[concat(variables('viewYourPaymentsApiAppServiceName'), '/authsettings')]",
