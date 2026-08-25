@@ -1,0 +1,482 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentTag": {
+      "type": "string"
+    },
+    "parentBusinessTag": {
+      "type": "string"
+    },
+    "portfolioTag": {
+      "type": "string"
+    },
+    "productTag": {
+      "type": "string"
+    },
+    "serviceLineTag": {
+      "type": "string"
+    },
+    "resourceEnvironmentName": {
+      "type": "String"
+    },
+    "serviceName": {
+      "type": "String"
+    },
+    "environmentName": {
+      "type": "String"
+    },
+    "environmentInstanceNumber": {
+      "type": "string",
+      "metadata": {
+        "description": "Short number for the environment. Used for the name of resources created."
+      }
+    },
+    "sharedAppServicePlanName": {
+      "type": "String"
+    },
+    "sharedAppInsightsName": {
+      "type": "String"
+    },
+    "appLoggingAppInsightsName": {
+      "type": "string"
+    },
+    "sharedSqlServerName": {
+      "type": "String"
+    },
+    "sharedResourceGroup": {
+      "type": "String"
+    },
+    "dataImportDatabaseSkuName": {
+      "defaultValue": "S0",
+      "type": "String"
+    },
+    "dataImportdatabaseTier": {
+      "defaultValue": "Standard",
+      "type": "String"
+    },
+    "sharedLogAnalyticsSubscriptionId": {
+      "defaultValue": "[subscription().subscriptionId]",
+      "type": "String"
+    },
+    "sharedLogAnalyticsResourceGroup": {
+      "defaultValue": "",
+      "type": "String"
+    },
+    "sharedLogAnalyticsWorkspaceName": {
+      "defaultValue": "",
+      "type": "String"
+    },
+    "sharedKeyVaultName": {
+      "defaultValue": "",
+      "type": "String",
+      "metadata": {
+        "description": "Name of the Shared KeyVault."
+      }
+    },
+    "AzureAdOptionsDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure AD options domain for the API"
+      }
+    },
+    "AzureAdOptionsTenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure AD Option Tenant Id for API"
+      }
+    },
+    "apimIpSecurityRestrictions": {
+      "type": "array",
+      "metadata": {
+        "description": "APIM Allowed IP address"
+      }
+    },
+    "apiAppServiceclientId": {
+      "type": "string",
+      "metadata": {
+        "description": "API App Service Auth settings client ID"
+      }
+    },
+    "sharedWorkspaceID": {
+      "type": "string"
+    },
+    "appServiceHTTPLogsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "App Service HTTP logs diagnostic setting"
+      }
+    },
+    "appServiceConsoleLogsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "App Service console logs diagnostic setting"
+      }
+    },
+    "appServiceAppLogsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "App Service app logs diagnostic setting"
+      }
+    },
+    "appServiceFileAuditLogsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "App Service file audit logs diagnostic setting"
+      }
+    },
+    "appServiceAuditLogsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "App Service audit logs diagnostic setting"
+      }
+    },
+    "appServiceAllMetricsSetting": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "All Metrics diagnostic setting"
+      }
+    },
+    "appServiceRetentionPolicyEnabled": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "appServiceRetentionPolicyDays": {
+      "type": "string",
+      "defaultValue": "30"
+    },
+    "appServiceLogRetentionDays": {
+      "type": "string",
+      "defaultValue": "30"
+    },
+    "appServiceLogRetentionMb": {
+      "type": "string",
+      "defaultValue": "30"
+    },
+    "applogToBlob": {
+      "type": "string",
+      "metadata": {
+        "description": "Log Application logs to Blob, default is off"
+      }
+    },
+    "weblogToBlob": {
+      "type": "bool",
+      "metadata": {
+        "description": "Log HTTP logs to Blob, default is off"
+      }
+    },
+    "sharedARMStorageName": {
+      "type": "string",
+      "metadata": {
+        "description": "Shared Storage Account for App Service Classic Logging"
+      }
+    }
+  },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/funding-platform-building-blocks/resourceTags/templates/",
+    "viewYourPaymentsApiAppServiceName": "[concat(variables('resourceNamePrefix'),'-api-as-', parameters('environmentInstanceNumber'))]",
+    "resourceNamePrefix": "[toLower(concat(parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+    "dataImportDatabaseName": "[concat(variables('resourceNamePrefix'),'-dataImport-db-', parameters('environmentInstanceNumber'))]",
+    "httpLogBlobName": "[concat(variables('viewYourPaymentsApiAppServiceName'),'-webserver-logs')]",
+    "applicationLogBlobName": "[concat(variables('viewYourPaymentsApiAppServiceName'),'-application-logs')]",
+    "keyVaultName": "[concat(variables('resourceNamePrefix'), '-shared-kv-', parameters('environmentInstanceNumber'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "Deploy_API_App_Service",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "environmentTag": {
+            "value": "[parameters('environmentTag')]"
+          },
+          "parentBusinessTag": {
+            "value": "[parameters('parentBusinessTag')]"
+          },
+          "portfolioTag": {
+            "value": "[parameters('portfolioTag')]"
+          },
+          "productTag": {
+            "value": "[parameters('productTag')]"
+          },
+          "serviceLineTag": {
+            "value": "[parameters('serviceLineTag')]"
+          },
+          "appServiceName": {
+            "value": "[variables('viewYourPaymentsApiAppServiceName')]"
+          },
+          "appServicePlanName": {
+            "value": "[parameters('sharedAppServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[parameters('sharedResourceGroup')]"
+          },
+          "appServiceConnectionStrings": {
+            "value": [
+              {
+                "name": "ViewYourPaymentsDbContext",
+                "connectionString": "[concat('@Microsoft.KeyVault(SecretUri=', reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('sharedKeyVaultName'),'ViewYourPaymentsDbContext'),'2018-02-14').secretUriWithVersion, ')')]",
+                "type": "SQLAzure"
+              }
+            ]
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('apimIpSecurityRestrictions')]"
+          },
+          "appServiceHTTPLogsSetting": {
+            "value": "[parameters('appServiceHTTPLogsSetting')]"
+          },
+          "workspaceId": {
+            "value": "[parameters('sharedWorkspaceID')]"
+          },
+          "appServiceConsoleLogsSetting": {
+            "value": "[parameters('appServiceConsoleLogsSetting')]"
+          },
+          "appServiceAppLogsSetting": {
+            "value": "[parameters('appServiceAppLogsSetting')]"
+          },
+          "appServiceFileAuditLogsSetting": {
+            "value": "[parameters('appServiceFileAuditLogsSetting')]"
+          },
+          "appServiceAuditLogsSetting": {
+            "value": "[parameters('appServiceAuditLogsSetting')]"
+          },
+          "allMetricsSetting": {
+            "value": "[parameters('appServiceAllMetricsSetting')]"
+          },
+          "retentionPolicyEnabled": {
+            "value": "[parameters('appServiceRetentionPolicyEnabled')]"
+          },
+          "retentionPolicyDays": {
+            "value": "[parameters('appServiceRetentionPolicyDays')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-11-01",
+      "name": "[concat(variables('viewYourPaymentsApiAppServiceName'), '/appsettings')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'Deploy_API_App_Service')]"
+      ],
+      "properties": {
+        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').InstrumentationKey]",
+        "APPLOGGINGAPPINSIGHTS_INSTRUMKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('appLoggingAppInsightsName')), '2014-04-01').InstrumentationKey]",
+        "AppSettings:AzureAdOptions:Domain": "[parameters('AzureAdOptionsDomain')]",
+        "AppSettings:AzureAdOptions:Instance": "https://login.microsoftonline.com/",
+        "AppSettings:AzureAdOptions:TenantId": "[parameters('AzureAdOptionsTenantId')]",
+        "AppSettings:Environment": "[parameters('environmentName')]",
+        "ASPNETCORE_ENVIRONMENT": "[toUpper(parameters('environmentName'))]",
+        "WEBSITE_TIME_ZONE": "GMT Standard Time"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "Deploy_Dataimport_SQL_database",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'sql-database.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "environmentTag": {
+            "value": "[parameters('environmentTag')]"
+          },
+          "parentBusinessTag": {
+            "value": "[parameters('parentBusinessTag')]"
+          },
+          "portfolioTag": {
+            "value": "[parameters('portfolioTag')]"
+          },
+          "productTag": {
+            "value": "[parameters('productTag')]"
+          },
+          "serviceLineTag": {
+            "value": "[parameters('serviceLineTag')]"
+          },
+          "databaseName": {
+            "value": "[variables('dataImportDatabaseName')]"
+          },
+          "sqlServerName": {
+            "value": "[parameters('sharedSqlServerName')]"
+          },
+          "databaseSkuName": {
+            "value": "[parameters('dataImportDatabaseSkuName')]"
+          },
+          "databaseTier": {
+            "value": "[parameters('dataImportDatabaseTier')]"
+          },
+          "logAnalyticsSubscriptionId": {
+            "value": "[parameters('sharedLogAnalyticsSubscriptionId')]"
+          },
+          "logAnalyticsResourceGroup": {
+            "value": "[parameters('sharedLogAnalyticsResourceGroup')]"
+          },
+          "logAnalyticsWorkspaceName": {
+            "value": "[parameters('sharedLogAnalyticsWorkspaceName')]"
+          }
+        }
+      },
+      "resourceGroup": "[parameters('sharedResourceGroup')]"
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2018-02-01",
+      "name": "[concat(variables('viewYourPaymentsApiAppServiceName'), '/authsettings')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'Deploy_API_App_Service')]"
+      ],
+      "properties": {
+        "enabled": true,
+        "httpApiPrefixPath": null,
+        "runtimeVersion": "~1",
+        "unauthenticatedClientAction": "RedirectToLoginPage",
+        "tokenStoreEnabled": true,
+        "allowedExternalRedirectUrls": null,
+        "defaultProvider": "AzureActiveDirectory",
+        "clientId": "[parameters('apiAppServiceclientId')]",
+        "clientSecret": null,
+        "issuer": "https://sts.windows.net/9c7d9dd3-840c-4b3f-818e-552865082e16/",
+        "allowedAudiences": [
+          "[parameters('AzureAdOptionsDomain')]"
+        ],
+        "additionalLoginParams": null,
+        "isAadAutoProvisioned": false
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "Deploy_App_Service_classic_logging",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/', 'Deploy_API_App_Service')]",
+        "deploy_applicationlog_blob_container",
+        "deploy_weblog_blob_container"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-logging.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServiceResourceName": {
+            "value": "[variables('viewYourPaymentsApiAppServiceName')]"
+          },
+          "appServiceLogRetentionDays": {
+            "value": "[parameters('appServiceLogRetentionDays')]"
+          },
+          "appServiceLogRetentionMb": {
+            "value": "[parameters('appServiceLogRetentionMb')]"
+          },
+          "applogToBlob": {
+            "value": "[parameters('applogToBlob')]"
+          },
+          "weblogToBlob": {
+            "value": "[parameters('weblogToBlob')]"
+          },
+          "sharedLogStorageAccount": {
+            "value": "[parameters('sharedARMStorageName')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "deploy_applicationlog_blob_container",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'storage-container.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('sharedARMStorageName')]"
+          },
+          "containerName": {
+            "value": "[variables('applicationLogBlobName')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "deploy_weblog_blob_container",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'storage-container.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('sharedARMStorageName')]"
+          },
+          "containerName": {
+            "value": "[variables('httpLogBlobName')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "Deploy_API_KeyVaultPolicy",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "Deploy_API_App_Service"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'keyvault-accesspolicies.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "accessPolicies": {
+            "value": [
+              {
+                "tenantId": "[subscription().tenantId]",
+                "objectId": "[reference(concat('Microsoft.Web/sites/', variables('viewYourPaymentsApiAppServiceName')), '2018-02-01', 'Full').identity.principalId]",
+                "permissions": {
+                  "secrets": [
+                    "list",
+                    "get"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
