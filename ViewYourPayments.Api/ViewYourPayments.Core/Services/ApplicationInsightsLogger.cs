@@ -12,9 +12,9 @@ namespace ViewYourPayments.Core.Services
     public class ApplicationInsightsLogger : IApplicationLogger
     {
         /// <summary>
-        /// The Application Insights Instrumentation Key.
+        /// The Application Insights Connection String.
         /// </summary>
-        public static string InstrumentationKey { get; set; }
+        public static string ConnectionString { get; set; }
 
         /// <summary>
         /// The telemetry client to use for logging to Application Insights.
@@ -29,8 +29,8 @@ namespace ViewYourPayments.Core.Services
         /// <summary>
         /// Create a new instance of an Application Insights Logger with the given key and properties.
         /// </summary>
-        /// <param name="instrumentationKey">The instrumentation key.</param>
-        /// <param name="properties">A dictionary containing the logging properties.</param>
+        /// <param name="telemetryClient">The telemetry client.</param>
+        /// <param name="appSettings">A Microsoft.Extensions.Options.IOptions<AppSettings> instance containing the AppSettings information.</param>
         public ApplicationInsightsLogger(TelemetryClient telemetryClient, IOptions<AppSettings> appSettings)
         {
             _telemetryClient = telemetryClient;

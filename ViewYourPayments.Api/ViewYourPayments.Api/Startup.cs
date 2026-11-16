@@ -3,7 +3,6 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,9 +41,9 @@ namespace ViewYourPayments.Api
             services.AddScoped<IPaymentSummaryRepository, PaymentSummaryRepository>();
             services.AddScoped<IPaymentLineRepository, PaymentLineRepository>();
             services.AddScoped<IPaymentService, PaymentsService>();
-            var appLogger = GetLogger(appSettings.Environment, appSettings.APPINSIGHTS_INSTRUMENTATIONKEY);
+            var appLogger = GetLogger(appSettings.Environment, appSettings.APPINSIGHTS_CONNECTIONSTRING);
             services.AddSingleton<IApplicationLogger>(al => (appLogger));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc();
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,7 +82,7 @@ namespace ViewYourPayments.Api
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger(c =>
             {
-                c.SerializeAsV2 = true;
+                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;
             });
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -99,10 +98,10 @@ namespace ViewYourPayments.Api
         /// </summary>
         /// <returns>Instance of ILogger.</returns>
         /// <param name="environment">current environment.</param>
-        /// <param name="appInsightsKey">appInsightsKey for logging.</param>
-        private ApplicationInsightsLogger GetLogger(string environment, string appInsightsKey)
-        {
-            var telemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
+        /// <param name="appInsightsConnectionString">appInsightsConnectionString for logging.</param>
+        private ApplicationInsightsLogger GetLogger(string environment, string appInsightsConnectionString)
+        {            
+            var telemetryClient = new TelemetryClient(new TelemetryConfiguration() { ConnectionString = appInsightsConnectionString });
             return new ApplicationInsightsLogger(telemetryClient, environment, "ViewYourPayments.Api");
         }
     }

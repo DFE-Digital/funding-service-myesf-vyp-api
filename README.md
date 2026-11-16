@@ -15,13 +15,13 @@ This project is a .Net 8 API project utilizing an Azure App Service for deployme
 
 For running the application locally, a `appsettings.json` file will need to be created in the `ViewYourPayments.Api` project. Below, and included in the repo, there is `appsettings.example.json` which can be used as a base and populated with the required values, which can be retrieved from the Azure Portal.
 
-## Application Settings (`local.settings.json`)
+## Application Settings (`appsettings.json`)
 ```json
 {
   "ConnectionStrings": {
     "ViewYourPaymentsDbContext": ""
   },
-  "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+  "APPINSIGHTS_CONNECTIONSTRING": "",
   "APPLOGGINGAPPINSIGHTS_INSTRUMKEY": "",
   "AppSettings": {
     "AzureAdOptions": {
@@ -43,8 +43,8 @@ For running the application locally, a `appsettings.json` file will need to be c
 - **`ConnectionStrings:ViewYourPaymentsDbContext`**  
   The connection string used to connect the application to its primary database context via Entity Framework Core.
 
-- **`APPINSIGHTS_INSTRUMENTATIONKEY`**  
-  The instrumentation key for Application Insights.
+- **`APPINSIGHTS_CONNECTIONSTRING`**  
+  The connection string for shared Application Insights.
 
 - **`APPLOGGINGAPPINSIGHTS_INSTRUMKEY`**  
   The instrumentation key for application logging with Application Insights.
