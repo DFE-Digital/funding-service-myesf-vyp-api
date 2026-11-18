@@ -105,11 +105,10 @@ stages:
       inputs:
         testSelector: 'testAssemblies'
         vsTestVersion: '18.0'
-        testAssemblyVer2: |
-          **\bin\Release\netcoreapp3.1\*.Tests.dll
+        testAssemblyVer2: '**\bin\Release\net$(dotNetVersion)\*.Tests.dll'
         platform: '$(BuildPlatform)'
         configuration: '$(BuildConfiguration)'
-        otherConsoleOptions: '/Framework:.NETCoreApp,Version=v3.1'
+        otherConsoleOptions: '/Framework:.NETCoreApp,Version=v$(dotNetVersion)'
         testFiltercriteria: TestCategory!=DB-Integration
         codeCoverageEnabled: true
 
