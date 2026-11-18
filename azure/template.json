@@ -276,7 +276,7 @@
         "[concat('Microsoft.Resources/deployments/', 'Deploy_API_App_Service')]"
       ],
       "properties": {
-        "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').InstrumentationKey]",
+        "APPINSIGHTS_CONNECTSTRING": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').ConnectionString]",
         "APPLOGGINGAPPINSIGHTS_INSTRUMKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('appLoggingAppInsightsName')), '2014-04-01').InstrumentationKey]",
         "AppSettings:AzureAdOptions:Domain": "[parameters('AzureAdOptionsDomain')]",
         "AppSettings:AzureAdOptions:Instance": "https://login.microsoftonline.com/",
