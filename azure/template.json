@@ -38,6 +38,14 @@
     "sharedAppInsightsName": {
       "type": "String"
     },
+    "sharedAppInsightsApplicationId": {
+      "defaultValue": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').ApplicationId]",
+      "type": "String"
+    },
+    "sharedAppInsightsInstrumentationKey": {
+      "defaultValue": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').InstrumentationKey]",
+      "type": "String"
+    },
     "appLoggingAppInsightsName": {
       "type": "string"
     },
@@ -45,6 +53,10 @@
       "type": "String"
     },
     "sharedResourceGroup": {
+      "type": "String"
+    },
+    "sharedResourceGroupLocationId": {
+      "defaultValue": "[resourceGroup().locationId]",
       "type": "String"
     },
     "dataImportDatabaseSkuName": {
@@ -276,7 +288,7 @@
         "[concat('Microsoft.Resources/deployments/', 'Deploy_API_App_Service')]"
       ],
       "properties": {
-        "APPINSIGHTS_CONNECTIONSTRING": "[reference(resourceId('Microsoft.Insights/components', parameters('sharedAppInsightsName')), '2014-04-01').ConnectionString]",
+        "APPINSIGHTS_CONNECTIONSTRING": "[concat('InstrumentationKey=', parameters('sharedAppInsightsInstrumentationKey'), ';', 'IngestionEndpoint=https://', parameters('sharedResourceGroupLocationId'), '-4.in.applicationinsights.azure.com/;', 'LiveEndpoint=https://', parameters('sharedResourceGroupLocationId'), '.livediagnostics.monitor.azure.com/;', 'ApplicationId=', parameters('sharedAppInsightsApplicationId'))]",
         "APPLOGGINGAPPINSIGHTS_INSTRUMKEY": "[reference(resourceId('Microsoft.Insights/components', parameters('appLoggingAppInsightsName')), '2014-04-01').InstrumentationKey]",
         "AppSettings:AzureAdOptions:Domain": "[parameters('AzureAdOptionsDomain')]",
         "AppSettings:AzureAdOptions:Instance": "https://login.microsoftonline.com/",
