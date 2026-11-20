@@ -41,7 +41,7 @@ namespace ViewYourPayments.Api
             services.AddScoped<IPaymentSummaryRepository, PaymentSummaryRepository>();
             services.AddScoped<IPaymentLineRepository, PaymentLineRepository>();
             services.AddScoped<IPaymentService, PaymentsService>();
-            var appLogger = GetLogger(appSettings.Environment, appSettings.APPINSIGHTS_CONNECTIONSTRING);
+            var appLogger = GetLogger(appSettings.Environment, appSettings.APPINSIGHTS_INSTRUMENTATIONKEY);
             services.AddSingleton<IApplicationLogger>(al => (appLogger));
             services.AddMvc();
             services.AddAuthentication(sharedOptions =>
@@ -98,10 +98,10 @@ namespace ViewYourPayments.Api
         /// </summary>
         /// <returns>Instance of ILogger.</returns>
         /// <param name="environment">current environment.</param>
-        /// <param name="appInsightsConnectionString">appInsightsConnectionString for logging.</param>
-        private ApplicationInsightsLogger GetLogger(string environment, string appInsightsConnectionString)
+        /// <param name="appInsightsKey">appInsightsKey for logging.</param>
+        private ApplicationInsightsLogger GetLogger(string environment, string appInsightsKey)
         {            
-            var telemetryClient = new TelemetryClient(new TelemetryConfiguration() { ConnectionString = appInsightsConnectionString });
+            var telemetryClient = new TelemetryClient(new TelemetryConfiguration(appInsightsKey));
             return new ApplicationInsightsLogger(telemetryClient, environment, "ViewYourPayments.Api");
         }
     }

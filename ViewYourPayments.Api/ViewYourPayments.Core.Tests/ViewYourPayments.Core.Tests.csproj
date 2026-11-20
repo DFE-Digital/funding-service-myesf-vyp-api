@@ -9,7 +9,7 @@
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="3.2.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.15" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
