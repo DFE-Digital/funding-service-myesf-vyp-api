@@ -12,9 +12,9 @@ namespace ViewYourPayments.Core.Services
     public class ApplicationInsightsLogger : IApplicationLogger
     {
         /// <summary>
-        /// The Application Insights Connection String.
+        /// The Application Insights Instrumentation Key.
         /// </summary>
-        public static string ConnectionString { get; set; }
+        public static string InstrumentationKey { get; set; }
 
         /// <summary>
         /// The telemetry client to use for logging to Application Insights.
